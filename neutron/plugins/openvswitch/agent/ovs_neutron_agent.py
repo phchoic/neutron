@@ -1091,6 +1091,10 @@ class OVSNeutronAgent(sg_rpc.SecurityGroupAgentRpcCallbackMixin,
                 # have been actually processed.
                 port_info['current'] = (port_info['current'] -
                                         set(skipped_devices))
+
+                # Delete the security group rules for skipped devices
+                self.sg_agent.remove_devices_filter(skipped_devices)
+
             except DeviceListRetrievalError:
                 # Need to resync as there was an error with server
                 # communication.
