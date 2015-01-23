@@ -200,7 +200,6 @@ class DeviceHandlingMixin(object):
                 LOG.exception(_LE('Error loading hosting device driver'))
             return cls._hosting_device_driver
 
-    @classmethod
     def get_hosting_device_plugging_driver(cls):
         """Returns  plugging driver."""
         if cls._plugging_driver:
@@ -208,7 +207,8 @@ class DeviceHandlingMixin(object):
         else:
             try:
                 cls._plugging_driver = importutils.import_object(
-                    cfg.CONF.hosting_devices.csr1kv_plugging_driver)
+                    cfg.CONF.hosting_devices.csr1kv_plugging_driver,
+                    cls._svc_vm_mgr)
             except (ImportError, TypeError, n_exc.NeutronException):
                 LOG.exception(_LE('Error loading plugging driver'))
             return cls._plugging_driver
@@ -273,6 +273,7 @@ class DeviceHandlingMixin(object):
                 'credentials': credentials,
                 'management_ip_address': mgmt_ip,
                 'protocol_port': hosting_device.protocol_port,
+                'timeout': None,
                 'created_at': str(hosting_device.created_at),
                 'booting_time': cfg.CONF.hosting_devices.csr1kv_booting_time,
                 'cfg_agent_id': hosting_device.cfg_agent_id}
